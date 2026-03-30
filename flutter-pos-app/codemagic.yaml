@@ -1,0 +1,38 @@
+workflows:
+  flutter-pos-release:
+    name: Flutter POS - Release APK
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+
+    environment:
+      flutter: stable
+      java: 17
+
+    scripts:
+      - name: Set up local properties
+        script: |
+          echo "flutter.sdk=$FLUTTER_ROOT" > "$CM_BUILD_DIR/android/local.properties"
+
+      - name: Get Flutter packages
+        script: |
+          flutter pub get
+
+      - name: Check Flutter version
+        script: |
+          flutter --version
+
+      - name: Build release APK
+        script: |
+          flutter build apk --release --no-shrink
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - build/app/outputs/apk/release/app-release.apk
+
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com
+        notify:
+          success: true
+          failure: true
